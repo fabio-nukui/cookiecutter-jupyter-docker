@@ -1,0 +1,22 @@
+# emacs
+*~
+
+# compiled
+*.pyc
+
+# IntelliJ
+.idea
+*.iml
+
+# model
+/work/model/
+
+# data
+/work/data/
+
+# notebook
+*.ipynb_checkpoints
+
+# DotEnv configuration
+.env
+

@@ -1,0 +1,7 @@
+{
+    "project_name": "project_name",
+    "project_slug": "{{ ('data-science-' if not cookiecutter.project_name.startswith('data-science-') else '') + cookiecutter.project_name.lower().replace(' ', '_') }}",
+    "jupyter_host_port": "8888",
+    "description": "Please Input a short description",
+    "data_source": "{{ 's3://beluga-datascience/' + cookiecutter.project_name.lower().replace(' ', '_').replace('data-science-', '') }}"
+}
