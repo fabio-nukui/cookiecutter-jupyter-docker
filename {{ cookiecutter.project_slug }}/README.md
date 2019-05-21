@@ -7,50 +7,55 @@
 * [Docker](https://docs.docker.com/install/#support)
 * If installing on linux, make sure to configure docker to [run as non-root user](https://docs.docker.com/install/linux/linux-postinstall/)
 
+---
+
 ## Setup development environment
 
-Setup the development environment in a Docker container by running `make init`
-This command downloads the data for the project and prepares the Docker image and container.
+Run `make setup` to setup the development environment.
+
+This command downloads the project data from S3 and buils a Docker image named **{{ cookiecutter.project_slug }}-image**.
 
 ### Update dependencies
 
-To update dependencies, add them in `docker/Dockerfile` or `work/requirements.txt`
-After changes, run `make rebuild-docker` to rebuild a new image and start a new container.
+To update dependencies, add them in `docker/Dockerfile` or `work/requirements.txt`.
 
-## Development with Docker container
+After changes, run `make rebuild` to rebuild a new image and start a new container.
 
-### Start Docker container
+---
 
-By running `make start`, a container running a jupyter server will be started.
-The notebook interface can be accessed in http://localhost:8888/tree
-The lab interface can be accessed in http://localhost:8888/lab
+## Development inside Docker container
 
-### Edit source code
+### Start container
 
-The source code of this project should be stored in the `src` directory.
-Changes in the host environment are reflected in the Docker container environment.
+Run `make start` to start a jupyter server inside a container named **{{ cookiecutter.project_slug }}-container**.
 
-### Run linter
+The **notebook** interface can be accessed in http://localhost:{{ cookiecutter.jupyter_host_port }}/tree
 
-When you check the code quality, please run `make lint`
+The **lab** interface can be accessed in http://localhost:{{ cookiecutter.jupyter_host_port }}/lab
 
-### Run test
+### Data inside project
 
-When you run test in `tests` directory, please run `make test`
+All data in the project should be stored in `data/`.
 
-### Sync data source to local data directory
+- To download data from S3, run `make sync-from-s3`.
+- To upload local data to S3, run `make sync-to-s3`.
 
-When you want to download data in remote data sources such as Amazon S3 or NFS, `sync-from-remote` target downloads them.
+### Source code / code quality
 
-### Sync local data to remote source
+All source code in the project should be in `src/`. Changes in the host environment are reflected in the Docker container environment.
 
-When you modify the data in local environment, `sync-to-remote` target uploads the local files stored in `data` to specified data sources such as S3 or NFS directories.
+- Run `make check-all` to run linters and tests
+- Or run each command separatedly:
+  - `make isort`: fix import sorting
+  - `make flake8`: run linter
+  - `make tests`: run tests
 
-### Show profile of Docker container
+### Other commands
 
-When you see the status of Docker container, please run `make profile` in host machine.
+- Run `make` to see documentation for other commands.
 
-# Credits
+---
 
-This package was created with [Cookiecutter](https://github.com/audreyr/cookiecutter) and uses the [scipy-notebook Docker image](https://github.com/jupyter/docker-stacks).
-It takes inspiration from [cookiecutter-docker-science](https://docker-science.github.io/) and [cookiecutter-data-science](https://drivendata.github.io/cookiecutter-data-science/)
+## Troubleshooting
+
+- If `make start` is failing, port `8888` may aready be in use. To change the port, run `make start JUPYTER_PORT=XXXX` (e.g.: `make start JUPYTER_PORT=8890`)

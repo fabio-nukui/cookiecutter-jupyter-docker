@@ -1,5 +1,5 @@
-.PHONY: help init start rebuild init-docker sync-from-s3 sync-to-s3 connect test lint profile \
-	clean clean-data clean-model clean-pyc clean-docker clean-container clean-image
+.PHONY: help setup start rebuild init-docker sync-from-s3 sync-to-s3 bash check-all isort lint \
+	test clean clean-data clean-model clean-pyc clean-docker clean-container clean-image
 .DEFAULT_GOAL := help
 
 ###################################################################################################
@@ -23,37 +23,30 @@ endef
 ###################################################################################################
 
 export DOCKER=docker
-export TARGET=
 export PRINT_HELP_PYSCRIPT
-export START_DOCKER_CONTAINER
 export PYTHONPATH=$PYTHONPATH:${PWD}/work/src
 export PROJECT_NAME={{ cookiecutter.project_slug }}
 export IMAGE_NAME=$(PROJECT_NAME)-image
 export CONTAINER_NAME=$(PROJECT_NAME)-container
 export DATA_SOURCE={{ cookiecutter.data_source }}
-export JUPYTER_HOST_PORT={{ cookiecutter.jupyter_host_port }}
-export JUPYTER_CONTAINER_PORT=8888
+export JUPYTER_PORT={{ cookiecutter.jupyter_host_port }}
+export JUPYTER_CONTAINER_PORT=$(JUPYTER_PORT)
 export PYTHON=python3
 export DOCKERFILE=docker/Dockerfile
 USER=jovyan
 
 ###################################################################################################
-## ADD TARGETS SPECIFIC TO "{{ cookiecutter.project_name }}"
-###################################################################################################
-
-
-###################################################################################################
-## GENERAL TARGETS
+## GENERAL COMMANDS
 ###################################################################################################
 
 help: ## show this message
 	@$(PYTHON) -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
-init: init-docker sync-from-source ## initialize repository for traning
+setup: init-docker sync-from-s3 ## initialize repository
 
 start: ## start docker container running jupyter notebook
 	$(DOCKER) run --rm -it -e JUPYTER_ENABLE_LAB=yes -v $(PWD)/work:/home/$(USER)/work \
-		-p $(JUPYTER_HOST_PORT):$(JUPYTER_CONTAINER_PORT) --name $(CONTAINER_NAME) \
+		-p $(JUPYTER_PORT):$(JUPYTER_CONTAINER_PORT) --name $(CONTAINER_NAME) \
 		$(IMAGE_NAME) start-notebook.sh --NotebookApp.token=''
 
 rebuild: clean-docker init-docker ## rebuild docker image
@@ -67,20 +60,19 @@ aws s3 sync $(DATA_SOURCE) work/data/
 sync-to-s3: ## sync local data to S3
 aws s3 sync work/data/ $(DATA_SOURCE)
 
-connect: ## connect to running container with bash
+bash: ## run bash inside running container
 	$(DOCKER) exec -it $(CONTAINER_NAME) bash
 
+check-all: isort lint test ## run tests and code style
+
+isort: ## fix import sorting order
+	$(DOCKER) exec -it $(CONTAINER_NAME) isort -y
+
+lint: ## run code style checker
+	$(DOCKER) exec -it $(CONTAINER_NAME) flake8
+
 test: ## run test cases in tests directory
-	$(PYTHON) -m unittest discover
-
-lint: ## check style with flake8
-	flake8 {{ cookiecutter.project_slug }}
-
-profile: ## show profile of the project
-	@echo "CONTAINER_NAME: $(CONTAINER_NAME)"
-	@echo "IMAGE_NAME: $(IMAGE_NAME)"
-	@echo "JUPYTER_PORT: `$(DOCKER) port $(CONTAINER_NAME)`"
-	@echo "DATA_SOURE: $(DATA_SOURCE)"
+	$(DOCKER) exec -it $(CONTAINER_NAME) pytest -vs
 
 clean: clean-data clean-model clean-pyc clean-docker ## remove all artifacts and data
 
