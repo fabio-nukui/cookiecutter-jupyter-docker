@@ -1,12 +1,11 @@
-# emacs
-*~
-
 # compiled
 *.pyc
 
-# IntelliJ
+# IDEs/editors
 .idea
 *.iml
+.vscode
+*~
 
 # model
 /work/model/
@@ -19,4 +18,3 @@
 
 # DotEnv configuration
 .env
-

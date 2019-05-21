@@ -16,7 +16,6 @@ Boilerplate for projects using jupyter notebooks
   - If installing on linux, make sure to configure docker to [run as non-root user](https://docs.docker.com/install/linux/linux-postinstall/)
 
 ### To start a new project, run:
-------------
 
 ```bash
 cookiecutter git@github.com:fabio-nukui/cookiecutter-docker-science.git
@@ -29,7 +28,6 @@ cookiecutter git@github.com:fabio-nukui/cookiecutter-docker-science.git --checko
 ```
 
 ### Directory structure
-------------
 
 The directory structure of your new project looks like this: 
 
