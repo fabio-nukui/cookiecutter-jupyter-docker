@@ -18,13 +18,13 @@ Boilerplate for projects using jupyter notebooks in docker
 ### To start a new project, run:
 
 ```bash
-cookiecutter git@github.com:fabio-nukui/cookiecutter-jupyter-docker.git
+cookiecutter https://github.com/fabio-nukui/cookiecutter-jupyter-docker.git
 ```
     
 specifying a git branch
 
 ```bash
-cookiecutter git@github.com:fabio-nukui/cookiecutter-jupyter-docker.git --checkout branch-name
+cookiecutter https://github.com/fabio-nukui/cookiecutter-jupyter-docker.git --checkout branch-name
 ```
 
 ### Directory structure
