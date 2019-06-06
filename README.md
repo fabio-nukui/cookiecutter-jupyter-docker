@@ -1,6 +1,6 @@
-# Cookiecutter Docker Science
+# Cookiecutter Jupyter Docker
 
-Boilerplate for projects using jupyter notebooks
+Boilerplate for projects using jupyter notebooks in docker
 
 ## Requirements
 
@@ -18,13 +18,13 @@ Boilerplate for projects using jupyter notebooks
 ### To start a new project, run:
 
 ```bash
-cookiecutter git@github.com:fabio-nukui/cookiecutter-docker-science.git
+cookiecutter git@github.com:fabio-nukui/cookiecutter-jupyter-docker.git
 ```
     
 specifying a git branch
 
 ```bash
-cookiecutter git@github.com:fabio-nukui/cookiecutter-docker-science.git --checkout branch-name
+cookiecutter git@github.com:fabio-nukui/cookiecutter-jupyter-docker.git --checkout branch-name
 ```
 
 ### Directory structure
